@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion, Collection } = require("mongodb");
+const { MongoClient, ServerApiVersion, Collection, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -45,11 +45,18 @@ async function run() {
     // post method
 
     app.post("/api/v1/user/create-booking", async(req, res)=>{
-        const booking = req.body;
-        console.log(booking);
+        const booking = req.body; 
         const result = await bookingCollection.insertOne(booking);
-        console.log(result);
         res.send(result);
+    });
+
+    // Delete Method
+
+    app.delete("/api/v1/user/cancel-booking/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await bookingCollection.deleteOne(query);
+      res.send(result);
     })
 
     // Send a ping to confirm a successful connection
